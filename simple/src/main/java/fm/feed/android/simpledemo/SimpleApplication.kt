@@ -6,13 +6,12 @@ import fm.feed.android.playersdk.FeedPlayerService
 
 /**
  * Configures the Feed.fm player with the demo credentials on launch:
- * hardcoded `demo`/`demo`, with a fresh client id per install.
+ * hardcoded `demo`/`demo`.
  */
 class SimpleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         val builder = FeedAudioPlayer.Builder(applicationContext, "demo", "demo")
-        builder.setCreateNewClientId(true)
         FeedPlayerService.initialize(builder)
     }
 }
