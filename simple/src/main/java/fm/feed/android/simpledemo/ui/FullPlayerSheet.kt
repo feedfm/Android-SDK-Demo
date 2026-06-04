@@ -1,6 +1,7 @@
 package fm.feed.android.simpledemo.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,10 +21,17 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +63,8 @@ fun FullPlayerSheet(
     onToggleDislike: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showAttribution by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -134,13 +144,46 @@ fun FullPlayerSheet(
         Spacer(Modifier.height(18.dp))
 
         Text(
-            text = "Swipe down to minimize",
+            text = "Powered by Feed.fm",
             color = FrTheme.ink3,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
+            modifier = Modifier.clickable { showAttribution = true },
         )
 
         Spacer(Modifier.height(24.dp))
+    }
+
+    if (showAttribution) {
+        AttributionSheet(onDismiss = { showAttribution = false })
+    }
+}
+
+/**
+ * Bottom sheet shown when "Powered by Feed.fm" is tapped. Dims the player behind a
+ * scrim; dismissed by tapping outside the sheet or dragging it down.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AttributionSheet(onDismiss: () -> Unit) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = FrTheme.surface1,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = FrTheme.ink3) },
+    ) {
+        Text(
+            text = "There is no affiliation, connection, association or endorsement of the " +
+                "products, goods or services displayed on this page by the copyright owners, " +
+                "featured recording artists and authors of the sound recordings (and the " +
+                "musical works embodied therein) transmitted through the Feed.fm player",
+            color = FrTheme.ink2,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 28.dp)
+                .padding(bottom = 32.dp),
+        )
     }
 }
 
