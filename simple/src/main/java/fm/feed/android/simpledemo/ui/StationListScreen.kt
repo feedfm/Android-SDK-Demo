@@ -21,6 +21,7 @@ fun StationListScreen(
     stations: List<RadioStation>,
     activeStationId: Int?,
     isPlayerOpen: Boolean,
+    isPlaying: Boolean,
     onStationClick: (RadioStation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -52,6 +53,7 @@ fun StationListScreen(
                 station = station,
                 index = index,
                 isActive = isPlayerOpen && activeStationId == station.id,
+                isPlaying = isPlaying,
                 onClick = { onStationClick(station) },
             )
         }

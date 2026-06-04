@@ -32,6 +32,7 @@ fun StationRow(
     station: RadioStation,
     index: Int,
     isActive: Boolean,
+    isPlaying: Boolean,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(16.dp)
@@ -79,8 +80,8 @@ fun StationRow(
             }
         }
         Icon(
-            imageVector = if (isActive) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-            contentDescription = if (isActive) "Pause" else "Play",
+            imageVector = if (isActive && isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+            contentDescription = if (isActive && isPlaying) "Pause" else "Play",
             tint = FrTheme.accent,
             modifier = Modifier
                 .padding(horizontal = 12.dp)

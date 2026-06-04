@@ -139,6 +139,7 @@ private fun RootScreen(vm: SimplePlayerViewModel = viewModel()) {
             stations = vm.stations,
             activeStationId = vm.activeStationId,
             isPlayerOpen = vm.isOpen,
+            isPlaying = vm.isPlaying,
             onStationClick = vm::select,
             modifier = Modifier.fillMaxSize(),
         )
