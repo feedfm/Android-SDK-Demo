@@ -36,6 +36,8 @@ class SimplePlayerViewModel : ViewModel() {
         private set
     var artist by mutableStateOf("")
         private set
+    var album by mutableStateOf("")
+        private set
     var isPlaying by mutableStateOf(false)
         private set
     var canSkip by mutableStateOf(false)
@@ -59,6 +61,10 @@ class SimplePlayerViewModel : ViewModel() {
 
     val activeStation: RadioStation?
         get() = stations.firstOrNull { it.id == activeStationId }
+
+    /** "Artist - Album" line for the players; omits whichever part is missing. */
+    val artistAlbum: String
+        get() = listOf(artist, album).filter { it.isNotBlank() }.joinToString(" - ")
 
     /** 0-based index of the active station, or null when none is active. */
     val activeStationIndex: Int?
@@ -90,6 +96,7 @@ class SimplePlayerViewModel : ViewModel() {
             val file = play?.audioFile
             title = file?.track?.title ?: ""
             artist = file?.artist?.name ?: ""
+            album = file?.release?.title ?: ""
             duration = file?.durationInSeconds ?: 0f
             elapsed = 0f
             canSkip = player.canSkip()
@@ -132,6 +139,7 @@ class SimplePlayerViewModel : ViewModel() {
         val file = player.currentPlay?.audioFile
         title = file?.track?.title ?: ""
         artist = file?.artist?.name ?: ""
+        album = file?.release?.title ?: ""
         duration = file?.durationInSeconds ?: 0f
         elapsed = player.currentPlaybackTime
         isPlaying = player.state == State.PLAYING
