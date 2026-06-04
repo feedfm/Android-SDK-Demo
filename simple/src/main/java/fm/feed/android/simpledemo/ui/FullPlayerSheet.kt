@@ -8,14 +8,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
@@ -61,31 +65,58 @@ fun FullPlayerSheet(
     onSkip: () -> Unit,
     onToggleLike: () -> Unit,
     onToggleDislike: () -> Unit,
+    onMinimize: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showAttribution by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 28.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = "NOW PLAYING",
-            color = FrTheme.ink3,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold,
-            letterSpacing = 1.2.sp,
-        )
-        Text(
-            text = station.name,
-            color = FrTheme.ink,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(FrTheme.ink.copy(alpha = 0.08f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                IconButton(onClick = onMinimize, modifier = Modifier.size(44.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "Minimize",
+                        tint = FrTheme.ink2,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "NOW PLAYING",
+                    color = FrTheme.ink3,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.2.sp,
+                )
+                Text(
+                    text = station.name,
+                    color = FrTheme.ink,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.weight(1f))
 
         ArtworkView(
             station = station,
@@ -98,7 +129,7 @@ fun FullPlayerSheet(
                 .aspectRatio(1f),
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.weight(1f))
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(

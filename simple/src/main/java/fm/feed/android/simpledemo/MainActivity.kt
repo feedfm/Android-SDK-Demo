@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,12 +28,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import fm.feed.android.playersdk.AvailabilityListener
 import fm.feed.android.playersdk.FeedAudioPlayer
 import fm.feed.android.playersdk.FeedPlayerService
@@ -122,6 +126,7 @@ private fun AvailabilityGate() {
 @Composable
 private fun RootScreen(vm: SimplePlayerViewModel = viewModel()) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
     val active = vm.activeStation
     val seed = (vm.activeStationIndex ?: 0) + 1
     val snackbarHostState = remember { SnackbarHostState() }
@@ -172,6 +177,11 @@ private fun RootScreen(vm: SimplePlayerViewModel = viewModel()) {
             onDismissRequest = vm::minimize,
             sheetState = sheetState,
             containerColor = FrTheme.screenBG,
+            // Cover the entire display: square corners, no grab handle, no inset reserved
+            // for the status bar. The sheet content applies its own safe-area padding.
+            shape = RectangleShape,
+            dragHandle = null,
+            windowInsets = WindowInsets(0, 0, 0, 0),
         ) {
             FullPlayerSheet(
                 station = active,
@@ -189,6 +199,9 @@ private fun RootScreen(vm: SimplePlayerViewModel = viewModel()) {
                 onSkip = vm::next,
                 onToggleLike = vm::toggleLike,
                 onToggleDislike = vm::toggleDislike,
+                onMinimize = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion { vm.minimize() }
+                },
             )
         }
     }
